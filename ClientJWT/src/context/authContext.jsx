@@ -1,6 +1,10 @@
 import {createContext, useContext, useState, useEffect } from "react";
 import { registerRequest } from "../api/auth";
 import { loginRequest } from "../api/auth";
+import { verifyToken } from "../api/auth";
+
+import Cookie from 'js-cookie'
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext()
 
@@ -12,11 +16,13 @@ export const useAuth = () => {
     return context
 }
 
+// eslint-disable-next-line react/prop-types
 export const AuthProvider = ({children}) => {
 
     const [user, setUser] = useState(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [errorAuth, setErrors] = useState([])
+    const [loading, setLoading] = useState(true)
 
     const signup = async (user) => {
         try{
@@ -25,10 +31,7 @@ export const AuthProvider = ({children}) => {
             setUser(res.data)
             setIsAuthenticated(true)
         }catch(err){
-            if(Array.isArray(err.response.data)){
-                setErrors(err.response.data)
-            }
-            setErrors([err.response.data.message])
+            setErrors(err.response.data)
         }
     }
 
@@ -36,13 +39,17 @@ export const AuthProvider = ({children}) => {
         try{
             const res = await loginRequest(user)
             console.log(res.data)
-            
-        }catch(err){
-            if(Array.isArray(err.response.data)){
-                setErrors(err.response.data)
-            }
-            setErrors([err.response.data.message])            
+            setUser(res.data)
+            setIsAuthenticated(true)
+        }catch(err){    
+            setErrors([err.response.data])            
         }
+    }
+
+    const logout = () => {
+        Cookies.remove('token')
+        setIsAuthenticated(false)
+        setUser(null)
     }
 
     useEffect(() => {
@@ -56,13 +63,48 @@ export const AuthProvider = ({children}) => {
         }
     }, [errorAuth])
 
+    useEffect(() => {
+        async function checkLogin(){
+            const cookie = Cookie.get()
+                
+        if(!cookie.token){
+            setIsAuthenticated(false)
+            setLoading(false)
+            return setUser(null)    
+        }        
+        
+        try{
+            const res = await verifyToken(cookie.token)
+            console.log(res)
+
+            if(!res.data){
+                setIsAuthenticated(false)
+                setLoading(false)
+                return;
+            }            
+            
+            setIsAuthenticated(true)
+            setUser(res.data)        
+            setLoading(false)
+                
+            }catch(err){
+                setIsAuthenticated(false)
+                setLoading(false)
+                setUser(null)
+            }          
+        }
+        checkLogin()
+    }, [])
+
     return (
         <AuthContext.Provider value = {{
             signup, 
             signin,
             user,
             isAuthenticated,
-            errorAuth,            
+            loading,
+            errorAuth, 
+            logout           
         }}>
             {children}
         </AuthContext.Provider>

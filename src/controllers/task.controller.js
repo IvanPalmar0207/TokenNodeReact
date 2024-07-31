@@ -2,7 +2,7 @@
 import task from "../models/task.model.js"
 
 export const allTasks = async (req, res) => {
-    const allTasks = await task.findAll({
+    const tasks = await task.findAll({
         where : {
             idUser : req.user.id
         },
@@ -13,7 +13,7 @@ export const allTasks = async (req, res) => {
     })
 
     res.json({
-        allTasks
+        tasks
     })
 }
 

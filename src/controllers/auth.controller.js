@@ -4,6 +4,10 @@ import user from "../models/user.model.js";
 import { createAccesToken } from "../libs/jwt.js";
 //Hash
 import bcryptjs from "bcryptjs"
+//JWT
+import jwt from 'jsonwebtoken'
+//Secret Key
+import TOKEN_SECRET from "../config.js";
 
 export const register = async (req, res) => {
     const {username, email, password} = req.body;    
@@ -98,4 +102,25 @@ export const profile = async (req, res) => {
         username : userFound.username,
         email : userFound.email        
     })    
+}
+
+export const verifyToken = async (req, res) => {
+    const {token} = req.cookies
+
+    if(!token) return res.status(401).json({message : 'Token Not Found'})
+
+    jwt.verify(token, TOKEN_SECRET, async (err, User) => {
+        if(err) return res.status(401).json({message : 'Token Not Found'})
+            
+        const userFound = await user.findByPk(User.id)
+
+        if(!userFound) return res.status(401).json({message : 'Unauthorized'})
+
+        return res.json({
+            id: userFound.id,
+            username: userFound.username,
+            email: userFound.email
+        })
+
+    })
 }

@@ -7,6 +7,8 @@ import { authRequired } from "../middlewares/validateToken.js";
 import { validateSchema } from "../middlewares/validator.middleware.js";
 //Register and login schemas
 import { registerSchema, loginSchema } from "../schemas/auth.schema.js";
+//VerifyToken
+import { verifyToken } from "../controllers/auth.controller.js";
 
 const userRouter = new Router();
 
@@ -18,5 +20,7 @@ userRouter.post('/login', validateSchema(loginSchema), login)
 userRouter.post('/logout', logout)
 //Profile Function
 userRouter.get('/profile', authRequired ,profile)
+//Verify Token
+userRouter.get('/verify', verifyToken)
 
 export default userRouter;

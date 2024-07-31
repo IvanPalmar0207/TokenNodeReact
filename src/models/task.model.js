@@ -1,7 +1,6 @@
 //database
 import sequelize from "../db.js";
 import { DataTypes } from "sequelize";
-import user from "./user.model.js";
 
 const task = sequelize.define('task',{
     title : {

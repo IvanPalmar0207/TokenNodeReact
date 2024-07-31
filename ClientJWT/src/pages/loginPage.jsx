@@ -4,17 +4,25 @@ import {useForm} from 'react-hook-form'
 import { useAuth } from '../context/authContext'
 //Navigation
 import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 
 function LoginPage(){
     
     const {register, handleSubmit, formState : {errors}} = useForm()
 
-    const {signin, errorAuth} = useAuth()
+    const {signin, isAuthenticated, errorAuth} = useAuth()
+
+    const navigate = useNavigate()
 
     const onSubmit = handleSubmit(data => {
-        signin(data)
+        signin(data)        
     })    
+
+    useEffect(() => {
+        if(isAuthenticated) navigate('/tasks')
+    },[isAuthenticated])
 
     return(
         <div className='flex h-screen items-center justify-center'>
