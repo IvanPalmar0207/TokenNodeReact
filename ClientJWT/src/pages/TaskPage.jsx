@@ -14,12 +14,14 @@ function TaskPage(){
         getTasks()
     },[])
 
-    if(tasksSee.length === 0) return(<h1>There is no tasks</h1>)
+    if(tasksSee == undefined) return(<h1>There is no tasks</h1>)
+    
+    if(tasksSee.length == 0) return(<h1>There is no tasks</h1>)
 
-    return <div className="grid grid-cols-3 gap-4">
+    return <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {
             tasksSee.map((task) => (
-                <TaskCard task={task} key={task._id}/>
+                <TaskCard task={task} key={task.id}/>
             ))
         }
     </div>

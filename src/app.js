@@ -8,7 +8,6 @@ import taskRouter from "./routes/task.routes.js";
 //Cors
 import cors from 'cors'
 
-
 const app = express();
 //Cors
 app.use(cors({

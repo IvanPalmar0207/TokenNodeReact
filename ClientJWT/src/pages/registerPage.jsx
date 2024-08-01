@@ -13,7 +13,7 @@ function RegisterPage(){
 
     useEffect(() => {
         if(isAuthenticated) navigation('/tasks');
-    },[isAuthenticated])
+    })
 
     const onSubmit = handleSubmit( async (values) => {                
         signup(values)
@@ -22,8 +22,7 @@ function RegisterPage(){
     return(
         <div className='flex h-screen items-center justify-center'>
 
-        <div className='bg-zinc-800 max-v-md w-fit p-10 rounded-md'>
-
+        <div className='bg-zinc-800 w-fit p-10 rounded-md'>            
             <form onSubmit={onSubmit}>
                 {
                     errorAuth.map((error, i) => (
@@ -32,6 +31,9 @@ function RegisterPage(){
                         </div>
                     ))
                 }
+
+                <h1 className='text-3xl my-2'>Register</h1>
+
                 <input type="text"
                     {...register('username', {required : true})}
                     className='w-full bg-zinc-500 text-white px-4 py-2 rounded-md my-2'
@@ -59,8 +61,10 @@ function RegisterPage(){
                     errors.password && <p className='text-red-600'>Password is required</p>
                 }
 
-                <button type="submit">
-                    Enter
+                <button type="submit"
+                    className='bg-sky-500 text-white px-4 py-2 rounded-md my-2'
+                >
+                    Register
                 </button>
 
                 <p className='flex gap-x-2 justify-between my-3'>
